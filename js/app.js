@@ -299,7 +299,7 @@ class AppOrchestrator {
 
     try {
       switch(viewName) {
-        case 'home':
+        case 'home': {
           const token = store.get('spotifyToken');
           if (!token) {
             this.viewport.innerHTML = uiRenderer.renderSpotifyLandingView();
@@ -309,8 +309,9 @@ class AppOrchestrator {
           const topTracks = await spotify.getUserTopTracks();
           this.viewport.innerHTML = uiRenderer.renderHomeView(topArtists, topTracks);
           break;
+        }
 
-        case 'search':
+        case 'search': {
           const query = store.get('searchQuery');
           if (!store.get('spotifyToken')) {
             this.viewport.innerHTML = uiRenderer.renderSpotifyLandingView();
@@ -319,8 +320,9 @@ class AppOrchestrator {
           const results = await spotify.search(query);
           this.viewport.innerHTML = uiRenderer.renderSearchView(results, query, true);
           break;
+        }
 
-        case 'artist':
+        case 'artist': {
           const artistId = store.get('viewData')?.artistId;
           if (!artistId) return this.navigateToView('home');
           
@@ -330,12 +332,14 @@ class AppOrchestrator {
           
           this.viewport.innerHTML = uiRenderer.renderArtistProfileView(artist, topTracks, albums);
           break;
+        }
 
-        case 'library':
+        case 'library': {
           const favs = store.get('favorites');
           const history = store.get('history');
           this.viewport.innerHTML = uiRenderer.renderLibraryView(favs, history);
           break;
+        }
       }
     } catch (e) {
       console.error(`Render view failure "${viewName}":`, e);
