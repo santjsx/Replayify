@@ -159,6 +159,28 @@ class AppOrchestrator {
     
     // Save settings
     document.getElementById('settings-save-btn').addEventListener('click', () => this._saveSettingsForm());
+    
+    const settingsConnectBtn = document.getElementById('settings-connect-btn');
+    if (settingsConnectBtn) {
+      settingsConnectBtn.addEventListener('click', () => {
+        const clientId = document.getElementById('settings-client-id').value.trim();
+        if (!clientId) {
+          uiRenderer.showToast('Please enter your Spotify Client ID first.', 'warning');
+          return;
+        }
+        store.set('spotifyClientId', clientId);
+        store.set('mockMode', false);
+        const mockToggle = document.getElementById('mock-mode-toggle');
+        if (mockToggle) {
+          mockToggle.setAttribute('aria-checked', 'false');
+        }
+        store.set('spotifyToken', null);
+        this.closeActiveModals();
+        uiRenderer.showToast('Redirecting to Spotify...', 'info');
+        spotify.login();
+      });
+    }
+
     document.getElementById('copy-redirect-btn').addEventListener('click', () => this._copyRedirectURI());
     
     const mockToggle = document.getElementById('mock-mode-toggle');
