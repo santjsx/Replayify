@@ -343,6 +343,37 @@ class AppOrchestrator {
       }
     } catch (e) {
       console.error(`Render view failure "${viewName}":`, e);
+      
+      const is403 = e.message && e.message.includes('403');
+      if (is403) {
+        this.viewport.innerHTML = `
+          <div style="text-align: center; padding: 60px 20px; max-width: 500px; margin: 0 auto; animation: modalEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
+            <i class="ri-lock-2-line" style="font-size: 3.5rem; color: #1db954; margin-bottom: 20px; display: inline-block; text-shadow: 0 0 30px rgba(29,185,84,0.25);"></i>
+            <h2 style="font-size: 1.45rem; font-weight: 800; margin-bottom: 12px; font-family: 'Outfit', sans-serif;">Spotify Access Forbidden (403)</h2>
+            
+            <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.6; margin-bottom: 24px; text-align: left;">
+              This error occurs because your Spotify Developer App is in <strong>Development Mode</strong>, and your Spotify account email has not been whitelisted under the developer dashboard.
+            </p>
+            
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 16px; border-radius: 8px; text-align: left; margin-bottom: 28px; font-size: 0.82rem; line-height: 1.5;">
+              <h4 style="font-weight: 700; margin-bottom: 8px; color: var(--text-primary);">How to fix this:</h4>
+              <ol style="margin-left: 18px; color: var(--text-secondary); display: flex; flex-direction: column; gap: 6px;">
+                <li>Go to the <a href="https://developer.spotify.com/dashboard" target="_blank" style="color: #1db954; font-weight: 600; text-decoration: underline;">Spotify Developer Dashboard <i class="ri-external-link-line" style="font-size: 0.75rem;"></i></a>.</li>
+                <li>Select your App and click on <strong>Users and Access</strong> in the left sidebar.</li>
+                <li>Click <strong>Add New User</strong> and enter the email address of the Spotify account you are logging in with.</li>
+                <li>Wait 30 seconds, reload this page, and select **Retry Connection**.</li>
+              </ol>
+            </div>
+            
+            <div style="display: flex; gap: 12px; justify-content: center;">
+              <button class="pill-btn active" onclick="location.reload()">Retry Connection</button>
+              <button class="pill-btn" onclick="orchestrator.openSettingsModal()">App Settings</button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
       this.viewport.innerHTML = `
         <div style="text-align: center; padding: 80px 20px;">
           <i class="ri-error-warning-line" style="font-size: 3.5rem; color: var(--explicit-red); margin-bottom: 20px; display: inline-block;"></i>
