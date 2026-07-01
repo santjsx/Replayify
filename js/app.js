@@ -631,7 +631,7 @@ class AppOrchestrator {
     this.modalOverlay.style.display = 'none';
     this.albumModal.style.display = 'none';
     this.settingsModal.style.display = 'none';
-    this._hideSuggestions();
+    this._hideSearchPageSuggestions();
   }
 
   _saveSettingsForm() {
