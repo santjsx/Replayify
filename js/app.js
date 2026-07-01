@@ -336,8 +336,8 @@ class AppOrchestrator {
         <div style="text-align: center; padding: 80px 20px;">
           <i class="ri-error-warning-line" style="font-size: 3.5rem; color: var(--explicit-red); margin-bottom: 20px; display: inline-block;"></i>
           <h2 style="font-size: 1.3rem; font-weight: 800; margin-bottom: 8px;">Network lost or resource block</h2>
-          <p style="color: var(--text-secondary); font-size: 0.85rem; max-width: 360px; margin: 0 auto 20px auto;">
-            We couldn't connect to Spotify servers. Connect your app configs or check connections.
+          <p style="color: var(--text-secondary); font-size: 0.82rem; max-width: 500px; margin: 0 auto 20px auto; font-family: monospace; background: rgba(255, 45, 85, 0.08); padding: 10px 14px; border-radius: 6px; border: 1px solid rgba(255, 45, 85, 0.15); text-align: left; overflow-x: auto; white-space: pre-wrap;">
+            Error Details: ${e.name} - ${e.message}
           </p>
           <button class="pill-btn active" style="margin: 0 auto;" onclick="location.reload()">Retry Connection</button>
         </div>
