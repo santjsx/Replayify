@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Replayify - Discover artists, albums, tracks, and music stats in a premium Apple Music Replay inspired UI.">
+  <title>Replayify — Replay 2026</title>
+  
+  <!-- Typography & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <!-- Apple Music Style Neon Gradient Meshes -->
+  <div class="glow-orb glow-orb-red" aria-hidden="true"></div>
+  <div class="glow-orb glow-orb-orange" aria-hidden="true"></div>
+
+  <!-- Main Container -->
+  <div class="app-container">
+    
+    <!-- Desktop Left Sidebar -->
+    <aside class="sidebar-nav">
+      <div class="sidebar-logo">
+        <i class="ri-sidebar-unfold-line"></i>
+        <span>Replayify</span>
+      </div>
+      <nav class="sidebar-links">
+        <button class="sidebar-link-btn active" data-view="home">
+          <i class="ri-home-5-line"></i>
+          <span>Home</span>
+        </button>
+        <button class="sidebar-link-btn" data-view="search">
+          <i class="ri-search-line"></i>
+          <span>Search</span>
+        </button>
+        <button class="sidebar-link-btn" data-view="library">
+          <i class="ri-folders-line"></i>
+          <span>Library</span>
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="spotify-connect-btn" class="spotify-status-pill connection-inactive" style="width: 100%; justify-content: center;">
+          <i class="ri-spotify-fill"></i>
+          <span class="btn-text">Connect Spotify</span>
+        </button>
+        <div style="display: flex; gap: 8px; width: 100%;">
+          <button id="theme-toggle-btn" class="header-action-btn" aria-label="Toggle theme" style="flex: 1; border-radius: 8px; height: 38px; display: flex; justify-content: center; align-items: center;">
+            <i class="ri-sun-line theme-icon-light"></i>
+            <i class="ri-moon-line theme-icon-dark" style="display: none;"></i>
+          </button>
+          <button id="header-settings-btn" class="header-action-btn" aria-label="Open settings" style="flex: 1; border-radius: 8px; height: 38px; display: flex; justify-content: center; align-items: center;">
+            <i class="ri-settings-4-line"></i>
+          </button>
+          <button id="header-share-btn" class="header-action-btn" aria-label="Share application" style="flex: 1; border-radius: 8px; height: 38px; display: flex; justify-content: center; align-items: center;">
+            <i class="ri-share-forward-line"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Mobile Top Header Bar -->
+    <header class="mobile-top-bar">
+      <button id="header-back-btn" class="header-action-btn" aria-label="Go back" style="opacity: 0.4;">
+        <i class="ri-arrow-left-s-line"></i>
+      </button>
+      <div class="mobile-logo">Replayify</div>
+      <button id="header-share-btn-mobile" class="header-action-btn" aria-label="Share application">
+        <i class="ri-share-forward-line"></i>
+      </button>
+    </header>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="mobile-bottom-nav">
+      <button class="mobile-nav-btn active" data-view="home">
+        <i class="ri-home-5-line"></i>
+        <span>Home</span>
+      </button>
+      <button class="mobile-nav-btn" data-view="search">
+        <i class="ri-search-line"></i>
+        <span>Search</span>
+      </button>
+      <button class="mobile-nav-btn" data-view="library">
+        <i class="ri-folders-line"></i>
+        <span>Library</span>
+      </button>
+      <button class="mobile-nav-btn" id="mobile-settings-btn">
+        <i class="ri-settings-4-line"></i>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <!-- Main Viewport Router -->
+    <main id="main-viewport" class="main-viewport">
+      <!-- Apple Replay elements injected dynamically by UI renderer -->
+    </main>
+
+    <!-- Floating Glass Capsule Music Player -->
+    <div id="global-preview-player" class="apple-music-player-bar" style="display: none;">
+      <!-- Glowing timeline progress bar at top border -->
+      <div class="player-progress-bar-container">
+        <div id="player-progress-fill" class="player-progress-fill"></div>
+      </div>
+      
+      <div class="player-bar-inner">
+        <!-- Left: Track Cover & Details -->
+        <div class="player-track-info">
+          <img src="" alt="" id="player-track-img" class="player-track-art">
+          <div class="player-metadata">
+            <div id="player-track-name" class="player-title">Track Title</div>
+            <div id="player-track-artist" class="player-subtitle">Artist Name</div>
+          </div>
+        </div>
+
+        <!-- Center: Playback Controls (Shuffle, Prev, Play/Pause, Next, Repeat) -->
+        <div class="player-controls">
+          <button id="player-shuffle-btn" class="player-control-icon-btn" aria-label="Shuffle preview playlist">
+            <i class="ri-shuffle-line"></i>
+          </button>
+          <button id="player-prev-btn" class="player-control-icon-btn" aria-label="Previous track">
+            <i class="ri-skip-back-fill"></i>
+          </button>
+          <button id="player-play-btn" class="player-main-play-circle" aria-label="Play/Pause">
+            <i class="ri-play-fill"></i>
+          </button>
+          <button id="player-next-btn" class="player-control-icon-btn" aria-label="Next track">
+            <i class="ri-skip-forward-fill"></i>
+          </button>
+          <button id="player-repeat-btn" class="player-control-icon-btn" aria-label="Repeat track">
+            <i class="ri-repeat-line"></i>
+          </button>
+        </div>
+
+        <!-- Right: Utility Controls (Lyrics, Airplay, Queue List) -->
+        <div class="player-utility-controls">
+          <button class="player-control-icon-btn active-lyric-btn" aria-label="Toggle lyrics">
+            <i class="ri-chat-voice-line"></i>
+          </button>
+          <button class="player-control-icon-btn" id="player-airplay-btn" aria-label="Select output source">
+            <i class="ri-airplay-line"></i>
+          </button>
+          <button class="player-control-icon-btn" id="player-close-btn" aria-label="Close preview player">
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Backdrop Blur Layer for Modals -->
+  <div id="modal-overlay" class="modal-backdrop" style="display: none;"></div>
+
+  <!-- Album Details Slide-out / Modal -->
+  <div id="album-details-modal" class="detail-modal" role="dialog" aria-modal="true" aria-labelledby="album-detail-title" style="display: none;">
+    <button id="modal-close-btn" class="modal-close-trigger" aria-label="Close details">
+      <i class="ri-close-line"></i>
+    </button>
+    <div class="modal-body-scroller">
+      <!-- Content populated dynamically -->
+    </div>
+  </div>
+
+  <!-- Settings Configuration Modal -->
+  <div id="settings-modal" class="settings-modal-card" role="dialog" aria-modal="true" aria-labelledby="settings-title" style="display: none;">
+    <div class="settings-header">
+      <h2 id="settings-title"><i class="ri-settings-4-line"></i> Spotify Settings</h2>
+      <button id="settings-close-btn" class="close-btn" aria-label="Close settings"><i class="ri-close-line"></i></button>
+    </div>
+    <div class="settings-body">
+      <p class="settings-desc">To connect Live Spotify data, enter your Spotify Client ID. If left empty, the application runs in high-fidelity <strong>Mock Demo Mode</strong>.</p>
+      
+      <div class="settings-form-group">
+        <label for="settings-client-id">Spotify Client ID</label>
+        <div class="input-bezel-wrapper">
+          <input type="text" id="settings-client-id" placeholder="Paste Client ID here...">
+        </div>
+        <a href="https://developer.spotify.com/dashboard" target="_blank" class="helper-link">Get Client ID from Spotify Developer Dashboard <i class="ri-external-link-line"></i></a>
+      </div>
+
+      <div class="settings-form-group">
+        <label for="settings-redirect-uri">Authorized Redirect URI</label>
+        <div class="input-bezel-wrapper readonly-input">
+          <input type="text" id="settings-redirect-uri" readonly>
+          <button id="copy-redirect-btn" class="copy-btn" aria-label="Copy redirect URI"><i class="ri-copy-line"></i></button>
+        </div>
+        <p class="field-hint">You must add this exact URL under "Redirect URIs" in your Spotify App Settings.</p>
+      </div>
+
+      <div class="settings-mode-selector">
+        <span class="mode-label">Force Developer Mock Mode</span>
+        <button id="mock-mode-toggle" class="toggle-switch-btn" aria-checked="false" role="switch">
+          <span class="toggle-slider"></span>
+        </button>
+      </div>
+
+      <div class="settings-actions">
+        <button id="settings-save-btn" class="btn btn-save">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Toast Notifications -->
+  <div id="toast-container" class="toast-wrapper" aria-live="polite"></div>
+
+  <!-- Application Bootstrap -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

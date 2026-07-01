@@ -1,0 +1,26 @@
+{
+  "name": "replayify",
+  "version": "1.0.0",
+  "description": "A premium music stats and discovery dashboard utilizing Spotify Web API with PKCE and high-fidelity mock sandboxes.",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vite": "^5.0.0"
+  },
+  "keywords": [
+    "spotify",
+    "music",
+    "dashboard",
+    "pkce",
+    "vanilla-js",
+    "vite",
+    "portfolio"
+  ],
+  "author": "Antigravity",
+  "license": "MIT"
+}

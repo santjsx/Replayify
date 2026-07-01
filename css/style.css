@@ -1,0 +1,376 @@
+/* ==========================================================================
+   Album Finder - Core Stylesheet & Theme System (Apple Music Replay style)
+   ========================================================================== */
+
+/* Design Tokens & CSS Variables */
+:root {
+  /* Colors - True Pitch Black (Apple style) */
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0c;
+  --bg-tertiary: #121216;
+  --bg-card: rgba(18, 18, 22, 0.45);
+  --bg-glass: rgba(10, 10, 12, 0.65);
+  --bg-glass-active: rgba(22, 22, 28, 0.95);
+  
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-focus: rgba(255, 255, 255, 0.16);
+  --border-double-bezel: rgba(255, 255, 255, 0.02);
+  --border-glow: rgba(255, 59, 48, 0.35);
+  
+  --text-primary: #ffffff;
+  --text-secondary: #8a8a93;
+  --text-tertiary: #48484a;
+  
+  --accent: #ff2d55; /* Apple Music Rose/Pink */
+  --accent-glow: rgba(255, 45, 85, 0.3);
+  --accent-secondary: #ff9500; /* Apple Music Orange */
+  
+  --accent-gradient: linear-gradient(135deg, #ff2d55 0%, #ff3b30 50%, #ff9500 100%);
+  --text-gradient: linear-gradient(180deg, #ffffff 40%, #a2a2a2 100%);
+  
+  --spotify-green: #1db954;
+  --explicit-red: #ff3b30;
+
+  /* Ambient Gradient Glows (Vibrant Orange-Red mesh) */
+  --glow-red: radial-gradient(circle at 75% -5%, rgba(255, 45, 85, 0.45) 0%, rgba(255, 59, 48, 0.2) 45%, transparent 75%);
+  --glow-orange: radial-gradient(circle at 90% 12%, rgba(255, 149, 0, 0.35) 0%, rgba(255, 204, 0, 0.12) 45%, transparent 80%);
+
+  /* Radius System */
+  --radius-outer: 18px;
+  --radius-inner: 10px;
+  --radius-pill: 9999px;
+
+  /* Animations & Motion */
+  --physics-transition: 750ms cubic-bezier(0.16, 1, 0.3, 1);
+  --fast-transition: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  --spring-transition: 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+[data-theme="light"] {
+  /* Colors - Light Mode (Apple style) */
+  --bg-primary: #f5f5f7;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e8e8ed;
+  --bg-card: rgba(255, 255, 255, 0.7);
+  --bg-glass: rgba(245, 245, 247, 0.75);
+  --bg-glass-active: rgba(255, 255, 255, 0.95);
+  
+  --border-subtle: rgba(0, 0, 0, 0.05);
+  --border-focus: rgba(0, 0, 0, 0.12);
+  --border-double-bezel: rgba(0, 0, 0, 0.02);
+  --border-glow: rgba(255, 45, 85, 0.2);
+  
+  --text-primary: #1d1d1f;
+  --text-secondary: #86868b;
+  --text-tertiary: #b0b0b5;
+  
+  --accent: #ff2d55;
+  --accent-glow: rgba(255, 45, 85, 0.15);
+  --accent-secondary: #ff9500;
+  --accent-gradient: linear-gradient(135deg, #ff2d55 0%, #ff9500 100%);
+  --text-gradient: linear-gradient(180deg, #1d1d1f 30%, #ff2d55 100%);
+
+  /* Ambient Gradient Glows */
+  --glow-red: radial-gradient(circle at 65% -10%, rgba(255, 45, 85, 0.08) 0%, transparent 60%);
+  --glow-orange: radial-gradient(circle at 85% 10%, rgba(255, 149, 0, 0.06) 0%, transparent 70%);
+}
+
+/* Document Resets */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--physics-transition), color var(--physics-transition);
+}
+
+/* SVGNails Film Grain Textures */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.012'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* Ambient Radial Mesh Gradients */
+.glow-orb {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.95;
+}
+
+.glow-orb-red {
+  background: var(--glow-red);
+  animation: floatOrb 22s infinite alternate ease-in-out;
+}
+
+.glow-orb-orange {
+  background: var(--glow-orange);
+  animation: floatOrb 28s infinite alternate-reverse ease-in-out;
+}
+
+@keyframes floatOrb {
+  0% { transform: scale(1) translate(0, 0); }
+  50% { transform: scale(1.15) translate(4%, 2%); }
+  100% { transform: scale(0.9) translate(-2%, -3%); }
+}
+
+/* Grid & Layout Structure */
+.app-container {
+  display: flex;
+  flex-direction: row;
+  min-height: 100dvh;
+  position: relative;
+  z-index: 1;
+}
+
+/* Sidebar Nav Layout (Desktop) */
+.sidebar-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 240px;
+  height: 100vh;
+  background: rgba(10, 10, 12, 0.75);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 30px 20px;
+  z-index: 100;
+  transition: transform var(--physics-transition);
+}
+
+[data-theme="light"] .sidebar-nav {
+  background: rgba(255, 255, 255, 0.75);
+  border-right-color: rgba(0, 0, 0, 0.06);
+}
+
+.sidebar-logo {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: -0.03em;
+}
+
+.sidebar-logo i {
+  color: var(--accent);
+}
+
+.sidebar-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 40px;
+  flex-grow: 1;
+}
+
+.sidebar-link-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: left;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all var(--fast-transition);
+}
+
+.sidebar-link-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .sidebar-link-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.sidebar-link-btn.active {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .sidebar-link-btn.active {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Mobile top & bottom bars (hidden by default) */
+.mobile-top-bar, .mobile-bottom-nav {
+  display: none;
+}
+
+/* Main Viewport Padding */
+.main-viewport {
+  flex-grow: 1;
+  width: calc(100% - 240px);
+  max-width: 1200px;
+  margin: 0;
+  padding: 40px 48px 120px 48px;
+  margin-left: 240px;
+  display: flex;
+  flex-direction: column;
+  animation: viewFadeIn 0.5s var(--physics-transition);
+}
+
+@keyframes viewFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: var(--radius-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+/* Responsive constraints */
+@media (max-width: 1024px) {
+  .sidebar-nav {
+    width: 200px;
+    padding: 24px 14px;
+  }
+  .main-viewport {
+    width: calc(100% - 200px);
+    margin-left: 200px;
+    padding: 30px 24px 100px 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+  }
+
+  .sidebar-nav {
+    display: none; /* Hide desktop sidebar */
+  }
+
+  .mobile-top-bar {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: rgba(10, 10, 12, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    z-index: 100;
+    padding: 0 16px;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  [data-theme="light"] .mobile-top-bar {
+    background: rgba(255, 255, 255, 0.8);
+    border-bottom-color: rgba(0, 0, 0, 0.06);
+  }
+
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 64px;
+    background: rgba(12, 12, 15, 0.85);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    z-index: 200;
+    align-items: center;
+    justify-content: space-around;
+    padding-bottom: env(safe-area-inset-bottom);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  [data-theme="light"] .mobile-bottom-nav {
+    background: rgba(255, 255, 255, 0.85);
+    border-top-color: rgba(0, 0, 0, 0.06);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.03);
+  }
+
+  .mobile-nav-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-family: inherit;
+    font-size: 0.65rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color var(--fast-transition);
+  }
+
+  .mobile-nav-btn i {
+    font-size: 1.25rem;
+  }
+
+  .mobile-nav-btn:hover {
+    color: var(--text-primary);
+  }
+
+  .mobile-nav-btn.active {
+    color: var(--accent);
+  }
+
+  .main-viewport {
+    width: 100%;
+    margin-left: 0;
+    padding: 84px 16px 140px 16px; /* Spacing for top header and bottom music player + nav */
+  }
+}
