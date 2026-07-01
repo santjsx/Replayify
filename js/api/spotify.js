@@ -346,9 +346,9 @@ class SpotifyAPIClient {
       const filteredAlbums = MOCK_ALBUMS.filter(a => a.name.toLowerCase().includes(query));
       
       return Promise.resolve({
-        artists: { items: filteredArtists },
-        albums: { items: filteredAlbums },
-        tracks: { items: MOCK_TOP_TRACKS['tame_impala'].filter(t => t.name.toLowerCase().includes(query)) }
+        artists: filteredArtists,
+        albums: filteredAlbums,
+        tracks: MOCK_TOP_TRACKS['tame_impala'].filter(t => t.name.toLowerCase().includes(query))
       });
     }
 
