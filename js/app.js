@@ -45,11 +45,15 @@ class AppOrchestrator {
         await spotify.handleCallback(authCode);
       } catch (err) {
         console.error('OAuth Callback exchange failure:', err);
-        uiRenderer.showToast('Spotify link failed. Loading Sandbox Demo Mode.', 'error');
+        uiRenderer.showToast('Spotify link failed. Reverting to Mock Mode.', 'error');
+        // Clean URL params and revert to Mock mode to restore function
+        window.history.replaceState({}, document.title, window.location.pathname);
+        store.set('mockMode', true);
       }
     } else if (authError) {
       uiRenderer.showToast(`Spotify Access Refused: ${authError}`, 'error');
       window.history.replaceState({}, document.title, window.location.pathname);
+      store.set('mockMode', true);
     }
 
     // Direct initial route
