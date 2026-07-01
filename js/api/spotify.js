@@ -24,10 +24,6 @@ class SpotifyAPIClient {
    * Safe fetch request checking token expiry and handling token renewals
    */
   async _request(endpoint, options = {}) {
-    if (store.get('mockMode') || !store.get('spotifyClientId')) {
-      return this._mockFallback(endpoint);
-    }
-
     let token = store.get('spotifyToken');
     if (!token) {
       this._triggerToast('Connect your Spotify account to query live music details.', 'warning');
@@ -109,7 +105,7 @@ class SpotifyAPIClient {
     window.sessionStorage.setItem('af_code_verifier', codeVerifier);
 
     const codeChallenge = await this._generateCodeChallenge(codeVerifier);
-    const scope = 'user-read-private user-read-email';
+    const scope = 'user-read-private user-read-email user-top-read';
 
     const params = new URLSearchParams({
       client_id: clientId,
@@ -208,7 +204,6 @@ class SpotifyAPIClient {
   async search(query) {
     if (!query.trim()) return { artists: [], albums: [], tracks: [] };
     
-    // Abort any active search requests
     if (this.activeSearchController) {
       this.activeSearchController.abort();
     }
@@ -226,11 +221,10 @@ class SpotifyAPIClient {
       };
     } catch (e) {
       if (e.name === 'AbortError') {
-        // Return empty values silently on abort
         return { artists: [], albums: [], tracks: [] };
       }
-      console.warn("API request error. Loading fallback search query.", e);
-      return this._mockFallback(`/search?q=${query}`);
+      console.error("API search request error:", e);
+      throw e;
     }
   }
 
@@ -262,6 +256,26 @@ class SpotifyAPIClient {
    */
   async getAlbum(id) {
     return this._request(`/albums/${id}`);
+  }
+
+  async getUserTopArtists() {
+    try {
+      const data = await this._request('/me/top/artists?limit=12&time_range=medium_term');
+      return data.items || [];
+    } catch (e) {
+      console.warn("Failed to fetch user top artists from Spotify:", e);
+      return [];
+    }
+  }
+
+  async getUserTopTracks() {
+    try {
+      const data = await this._request('/me/top/tracks?limit=15&time_range=medium_term');
+      return data.items || [];
+    } catch (e) {
+      console.warn("Failed to fetch user top tracks from Spotify:", e);
+      return [];
+    }
   }
 
   /**

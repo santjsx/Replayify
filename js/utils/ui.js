@@ -130,10 +130,29 @@ class UIComponentRenderer {
     `;
   }
 
+  renderSpotifyLandingView() {
+    return `
+      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 65vh; text-align: center; padding: 40px 16px;">
+        <div class="bezel-container" style="max-width: 500px; padding: 8px; margin-bottom: 24px; animation: modalEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1);">
+          <div class="inner-card" style="padding: 40px 24px; align-items: center; background: rgba(18, 18, 22, 0.4); backdrop-filter: blur(20px);">
+            <i class="ri-spotify-fill" style="font-size: 5rem; color: #1db954; text-shadow: 0 0 40px rgba(29,185,84,0.3); margin-bottom: 20px;"></i>
+            <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.2rem; font-weight: 900; margin-bottom: 12px; letter-spacing: -0.5px; color: var(--text-primary);">Your Listening Recap</h1>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin-bottom: 30px;">
+              Connect your Spotify account to calculate your personal Replay statistics, top artists, tracks, and albums.
+            </p>
+            <button id="landing-connect-btn" class="pill-btn active" style="padding: 14px 32px; font-size: 1rem; background: #1db954; border-color: #1db954; box-shadow: 0 10px 20px rgba(29,185,84,0.2); font-weight: 700;">
+              Connect Spotify Account
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   /**
    * Render Home View (Apple Music Replay dashboard)
    */
-  renderHomeView(trendingArtists, newReleases) {
+  renderHomeView(topArtists, topTracks) {
     const activeMonth = store.get('activeMonth') || 'March';
     const stats = store.getSimulatedStats();
     
@@ -156,49 +175,41 @@ class UIComponentRenderer {
       </button>
     `).join('');
 
-    // Ranked top artists templates
-    const rankedArtistsHtml = trendingArtists.slice(0, 4).map((artist, idx) => {
-      const image = artist.images?.[0]?.url || artist.image || '';
+    // Ranked top artists templates (using live user top artists)
+    const rankedArtistsHtml = topArtists.slice(0, 4).map((artist, idx) => {
+      const image = artist.images?.[0]?.url || artist.image || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=100&h=100&q=80';
       return `
         <div class="ranked-artist-card" data-artist-id="${artist.id}" data-artist-name="${artist.name.replace(/"/g, '&quot;')}" data-artist-image="${image}">
           <img src="${image}" alt="${artist.name}" class="ranked-artist-img" loading="lazy">
           <span class="ranked-number-badge">${idx + 1}</span>
           <div class="ranked-card-overlay">
             <h4 class="ranked-card-title">${artist.name}</h4>
-            <p class="ranked-card-desc">${artistMinutes[idx]?.toLocaleString()} minutes</p>
+            <p class="ranked-card-desc">${artistMinutes[idx] ? artistMinutes[idx].toLocaleString() : '0'} minutes</p>
           </div>
         </div>
       `;
     }).join('');
 
-    // Two-column songs layout
-    const allTracks = [
-      { id: 'let_it_happen', name: 'Let It Happen', artist: 'Tame Impala', image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=100&h=100&q=80', preview_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', explicit: false },
-      { id: 'lunch', name: 'LUNCH', artist: 'Billie Eilish', image: 'https://images.unsplash.com/photo-1557672172-298e090bd0f1?auto=format&fit=crop&w=100&h=100&q=80', preview_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', explicit: true },
-      { id: 'get_lucky', name: 'Get Lucky (feat. Pharrell Williams)', artist: 'Daft Punk', image: 'https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?auto=format&fit=crop&w=100&h=100&q=80', preview_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', explicit: false },
-      { id: 'creep', name: 'Creep', artist: 'Radiohead', image: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=100&h=100&q=80', preview_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', explicit: true },
-      { id: 'the_less_i_know', name: 'The Less I Know the Better', artist: 'Tame Impala', image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=100&h=100&q=80', preview_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', explicit: true },
-      { id: 'chihiro', name: 'CHIHIRO', artist: 'Billie Eilish', image: 'https://images.unsplash.com/photo-1557672172-298e090bd0f1?auto=format&fit=crop&w=100&h=100&q=80', preview_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', explicit: false },
-      { id: 'instant_crush', name: 'Instant Crush (feat. Julian Casablancas)', artist: 'Daft Punk', image: 'https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?auto=format&fit=crop&w=100&h=100&q=80', preview_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', explicit: false },
-      { id: 'karma_police', name: 'Karma Police', artist: 'Radiohead', image: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=100&h=100&q=80', preview_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', explicit: false }
-    ];
-
-    const songsHtml = allTracks.map((t, idx) => {
+    // Two-column songs layout (using live user top tracks)
+    const songsHtml = topTracks.slice(0, 8).map((t, idx) => {
+      const image = t.album?.images?.[0]?.url || t.image || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=100&h=100&q=80';
+      const artistName = t.artists?.[0]?.name || t.artist || 'Unknown Artist';
+      const plays = 52 - (idx * 4); // Simulate plays counts relative to rank
       return `
-        <div class="replay-song-row track-row-item" data-track-id="${t.id}" data-preview-url="${t.preview_url}" 
+        <div class="replay-song-row track-row-item" data-track-id="${t.id}" data-preview-url="${t.preview_url || ''}" 
              data-track-name="${t.name.replace(/"/g, '&quot;')}" 
-             data-track-artist="${t.artist.replace(/"/g, '&quot;')}"
-             data-track-image="${t.image}">
+             data-track-artist="${artistName.replace(/"/g, '&quot;')}"
+             data-track-image="${image}">
           <div class="song-row-left">
             <span class="song-row-star"><i class="ri-star-fill" style="color: #ff2d55; font-size: 0.65rem;"></i></span>
             <span class="song-row-rank">${idx + 1}</span>
-            <img src="${t.image}" alt="" class="song-row-thumb">
+            <img src="${image}" alt="" class="song-row-thumb">
             <div class="song-row-meta">
               <div class="song-row-title">
                 <span class="song-row-title-text">${t.name}</span>
                 ${t.explicit ? '<span class="explicit-badge" style="background: var(--explicit-red); color: white; font-size: 0.58rem; padding: 0.5px 3.5px; border-radius: 2px; flex-shrink: 0;">E</span>' : ''}
               </div>
-              <div class="song-row-subtitle">${t.artist} &bull; ${stats.plays[idx]} plays</div>
+              <div class="song-row-subtitle">${artistName} &bull; ${plays} plays</div>
             </div>
           </div>
           <div class="song-row-right">
@@ -209,9 +220,18 @@ class UIComponentRenderer {
       `;
     }).join('');
 
-    // Top Albums cover arts list
-    const albumsHtml = newReleases.slice(0, 5).map(album => {
-      const image = album.images?.[0]?.url || album.image || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=300&q=80';
+    // Extract unique albums from top tracks to show real user top albums carousel
+    const uniqueAlbums = [];
+    const albumIds = new Set();
+    topTracks.forEach(t => {
+      if (t.album && !albumIds.has(t.album.id)) {
+        albumIds.add(t.album.id);
+        uniqueAlbums.push(t.album);
+      }
+    });
+
+    const albumsHtml = uniqueAlbums.slice(0, 6).map(album => {
+      const image = album.images?.[0]?.url || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=300&q=80';
       const artistName = album.artists?.[0]?.name || 'Unknown Artist';
       return `
         <div class="album-art-only-card album-card" data-album-id="${album.id}" 

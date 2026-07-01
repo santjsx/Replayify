@@ -148,6 +148,11 @@ class AppOrchestrator {
       if (clearBtn) {
         this._clearSearchPageInput();
       }
+
+      const landingConnectBtn = e.target.closest('#landing-connect-btn');
+      if (landingConnectBtn) {
+        this.openSettingsModal();
+      }
     });
 
     document.addEventListener('keydown', (e) => {
@@ -174,10 +179,6 @@ class AppOrchestrator {
         }
         store.set('spotifyClientId', clientId);
         store.set('mockMode', false);
-        const mockToggle = document.getElementById('mock-mode-toggle');
-        if (mockToggle) {
-          mockToggle.setAttribute('aria-checked', 'false');
-        }
         store.set('spotifyToken', null);
         this.closeActiveModals();
         uiRenderer.showToast('Redirecting to Spotify...', 'info');
@@ -186,13 +187,6 @@ class AppOrchestrator {
     }
 
     document.getElementById('copy-redirect-btn').addEventListener('click', () => this._copyRedirectURI());
-    
-    const mockToggle = document.getElementById('mock-mode-toggle');
-    mockToggle.addEventListener('click', () => {
-      const active = mockToggle.getAttribute('aria-checked') === 'true';
-      mockToggle.setAttribute('aria-checked', (!active).toString());
-      store.set('mockMode', !active);
-    });
 
     // Global Key Esc handler
     document.addEventListener('keydown', (e) => {
@@ -306,13 +300,22 @@ class AppOrchestrator {
     try {
       switch(viewName) {
         case 'home':
-          const trending = await spotify.getTrendingArtists();
-          const releases = await spotify.getNewReleases();
-          this.viewport.innerHTML = uiRenderer.renderHomeView(trending, releases);
+          const token = store.get('spotifyToken');
+          if (!token) {
+            this.viewport.innerHTML = uiRenderer.renderSpotifyLandingView();
+            break;
+          }
+          const topArtists = await spotify.getUserTopArtists();
+          const topTracks = await spotify.getUserTopTracks();
+          this.viewport.innerHTML = uiRenderer.renderHomeView(topArtists, topTracks);
           break;
 
         case 'search':
           const query = store.get('searchQuery');
+          if (!store.get('spotifyToken')) {
+            this.viewport.innerHTML = uiRenderer.renderSpotifyLandingView();
+            break;
+          }
           const results = await spotify.search(query);
           this.viewport.innerHTML = uiRenderer.renderSearchView(results, query, true);
           break;
@@ -622,11 +625,6 @@ class AppOrchestrator {
 
   openSettingsModal() {
     document.getElementById('settings-client-id').value = store.get('spotifyClientId');
-    
-    const isMock = store.get('mockMode');
-    const mockSwitch = document.getElementById('mock-mode-toggle');
-    mockSwitch.setAttribute('aria-checked', isMock.toString());
-
     this.modalOverlay.style.display = 'block';
     this.settingsModal.style.display = 'block';
   }
@@ -641,16 +639,13 @@ class AppOrchestrator {
   _saveSettingsForm() {
     const clientId = document.getElementById('settings-client-id').value.trim();
     store.set('spotifyClientId', clientId);
-    
-    const mockSwitch = document.getElementById('mock-mode-toggle');
-    const isMock = mockSwitch.getAttribute('aria-checked') === 'true';
-    store.set('mockMode', isMock);
+    store.set('mockMode', false);
 
     this.closeActiveModals();
     uiRenderer.showToast('Settings saved successfully.', 'success');
 
     const token = store.get('spotifyToken');
-    if (clientId && !isMock && !token) {
+    if (clientId && !token) {
       if (confirm('A Spotify Client ID was configured. Connect Spotify directly?')) {
         spotify.login();
       }
