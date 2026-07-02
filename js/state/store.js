@@ -11,7 +11,7 @@ class StateStore {
       theme: localStorage.getItem('af_theme') || 'dark',
       spotifyClientId: localStorage.getItem('af_spotify_client_id') || '',
       spotifyToken: this._safeParseLocalStorage('af_spotify_token', null),
-      mockMode: false,
+      mockMode: localStorage.getItem('af_mock_mode') === 'true' || false,
       favorites: this._safeParseLocalStorage('af_favorites', { artists: [], albums: [] }),
       history: this._safeParseLocalStorage('af_history', []),
       
